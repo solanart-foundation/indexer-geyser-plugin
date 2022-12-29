@@ -203,62 +203,62 @@ impl GeyserPlugin for GeyserPluginRabbitMq {
         Ok(())
     }
 
-    fn update_account(
-        &mut self,
-        account: ReplicaAccountInfoVersions,
-        slot: u64,
-        is_startup: bool,
-    ) -> Result<()> {
-        self.with_inner(
-            || GeyserPluginError::AccountsUpdateError { msg: UNINIT.into() },
-            |this| {
-                this.metrics.recvs.log(1);
+    // fn update_account(
+    //     &mut self,
+    //     account: ReplicaAccountInfoVersions,
+    //     slot: u64,
+    //     is_startup: bool,
+    // ) -> Result<()> {
+    //     self.with_inner(
+    //         || GeyserPluginError::AccountsUpdateError { msg: UNINIT.into() },
+    //         |this| {
+    //             this.metrics.recvs.log(1);
 
-                match account {
-                    ReplicaAccountInfoVersions::V0_0_1(acct) => {
-                        if !this.acct_sel.is_selected(acct, is_startup) {
-                            return Ok(());
-                        }
+    //             match account {
+    //                 ReplicaAccountInfoVersions::V0_0_1(acct) => {
+    //                     if !this.acct_sel.is_selected(acct, is_startup) {
+    //                         return Ok(());
+    //                     }
 
-                        let ReplicaAccountInfo {
-                            pubkey,
-                            lamports,
-                            owner,
-                            executable,
-                            rent_epoch,
-                            data,
-                            write_version,
-                        } = *acct;
+    //                     let ReplicaAccountInfo {
+    //                         pubkey,
+    //                         lamports,
+    //                         owner,
+    //                         executable,
+    //                         rent_epoch,
+    //                         data,
+    //                         write_version,
+    //                     } = *acct;
 
-                        let key = Pubkey::new_from_array(pubkey.try_into()?);
-                        let owner = Pubkey::new_from_array(owner.try_into()?);
-                        let data = data.to_owned();
+    //                     let key = Pubkey::new_from_array(pubkey.try_into()?);
+    //                     let owner = Pubkey::new_from_array(owner.try_into()?);
+    //                     let data = data.to_owned();
 
-                        this.spawn(|this| async move {
-                            this.producer
-                                .send(Message::AccountUpdate(AccountUpdate {
-                                    key,
-                                    lamports,
-                                    owner,
-                                    executable,
-                                    rent_epoch,
-                                    data,
-                                    write_version,
-                                    slot,
-                                    is_startup,
-                                }))
-                                .await;
-                            this.metrics.sends.log(1);
+    //                     this.spawn(|this| async move {
+    //                         this.producer
+    //                             .send(Message::AccountUpdate(AccountUpdate {
+    //                                 key,
+    //                                 lamports,
+    //                                 owner,
+    //                                 executable,
+    //                                 rent_epoch,
+    //                                 data,
+    //                                 write_version,
+    //                                 slot,
+    //                                 is_startup,
+    //                             }))
+    //                             .await;
+    //                         this.metrics.sends.log(1);
 
-                            Ok(())
-                        });
-                    },
-                };
+    //                         Ok(())
+    //                     });
+    //                 },
+    //             };
 
-                Ok(())
-            },
-        )
-    }
+    //             Ok(())
+    //         },
+    //     )
+    // }
 
     fn notify_transaction(
         &mut self,
@@ -351,11 +351,10 @@ impl GeyserPlugin for GeyserPluginRabbitMq {
     }
 
     fn account_data_notifications_enabled(&self) -> bool {
-        true
+        false
     }
 
     fn transaction_notifications_enabled(&self) -> bool {
-        let this = self.expect_inner();
-        !this.ins_sel.is_empty()
+        true
     }
 }

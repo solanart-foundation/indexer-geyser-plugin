@@ -20,7 +20,7 @@ geyser = ["solana-program", "suffix"]
 http-indexer = ["solana-program", "suffix"]
 job-runner = []
 producer = ["suffix"]
-search-indexer = ["serde_json", "solana-program", "suffix"]
+search-indexer = ["solana-program", "suffix"]
 suffix = ["clap"]
 
 [dependencies]
@@ -31,7 +31,7 @@ log = "0.4.14"
 rand = "0.8.5"
 rmp-serde = "1.0.0-beta.2"
 serde = { version = "1.0.133", features = ["derive"] }
-serde_json = { version = "1.0.79", optional = true }
+serde_json = { version = "1.0.79" }
 # TODO: tighten this bound once more things support 1.10
 solana-program = { version = ">=1.9", optional = true }
 strum = { version = "0.24.1", features = ["derive"] }
