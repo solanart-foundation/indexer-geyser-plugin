@@ -39,6 +39,8 @@ pub struct AccountUpdate {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InstructionNotify {
     /// The program this instruction was executed with
+    pub signature: String,
+    /// The program this instruction was executed with
     pub program: Pubkey,
     /// The binary instruction opcode
     pub data: Vec<u8>,

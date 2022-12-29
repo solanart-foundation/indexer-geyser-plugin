@@ -271,6 +271,7 @@ impl GeyserPlugin for GeyserPluginRabbitMq {
             ins: &CompiledInstruction,
             keys: &AccountKeys,
             slot: u64,
+            signature: String,
         ) -> anyhow::Result<Option<Message>> {
             let program = *keys
                 .get(ins.program_id_index as usize)
@@ -294,6 +295,7 @@ impl GeyserPlugin for GeyserPluginRabbitMq {
             let data = ins.data.clone();
 
             Ok(Some(Message::InstructionNotify(InstructionNotify {
+                signature,
                 program,
                 data,
                 accounts,
@@ -326,7 +328,7 @@ impl GeyserPlugin for GeyserPluginRabbitMq {
                                 .flatten()
                                 .flat_map(|i| i.instructions.iter()),
                         ) {
-                            match process_instruction(&this.ins_sel, ins, &keys, slot) {
+                            match process_instruction(&this.ins_sel, ins, &keys, slot, tx.transaction.signature().to_string()) {
                                 Ok(Some(m)) => {
                                     this.spawn(|this| async move {
                                         this.producer.send(m).await;
